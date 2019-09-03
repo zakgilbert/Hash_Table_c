@@ -47,6 +47,7 @@ static void _destroy(Hash *this)
             if (NULL != this->table[i])
             {
                 print_node(this->table[i], i);
+                free(this->table[i]->key);
                 free(this->table[i]);
             }
         }
@@ -72,11 +73,13 @@ static struct Node *_search(Hash *this, const char *key)
 static struct Node *_create_node(const char *key, int data) /* insert data params */
 {
     struct Node *item = malloc(sizeof(struct Node));
-    item->key = strdup(key);
+    item->key = malloc(strlen(key));
+    item->key = strcpy(item->key, key);
     item->data = data;
 
     return item;
 }
+
 static void _print_table(Hash *this)
 {
     for (int i = 0; i < this->size; i++)
