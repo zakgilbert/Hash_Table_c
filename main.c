@@ -9,6 +9,6 @@ int main(int argc, char **argv)
     table->insert(table, "one", 1);
     table->insert(table, "two", 2);
     table->insert(table, "two", 2);
-    table->print_table(table);
+    table->destroy(table);
     return 0;
 }

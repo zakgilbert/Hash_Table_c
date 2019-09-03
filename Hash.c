@@ -32,12 +32,25 @@ static int hash_code(const char *letter, const int num, const int attempt)
     return (hash_a + (attempt * (hash_b + 1))) % num;
 }
 
+static void print_node(struct Node *node, int i)
+{
+    printf("%p    Data: %d     Key: %s    Index: %d\n", node, node->data, node->key, i);
+}
+
 static void _destroy(Hash *this)
 {
     if (NULL != this)
     {
+        printf("Deallocating Hash Table %p\n", this);
+        for (int i = 0; i < this->size; i++)
+        {
+            if (NULL != this->table[i])
+            {
+                print_node(this->table[i], i);
+                free(this->table[i]);
+            }
+        }
         free(this);
-        this = NULL;
     }
 }
 
@@ -49,9 +62,7 @@ static struct Node *_search(Hash *this, const char *key)
     while (NULL != item)
     {
         if (strcmp(item->key, key) == 0)
-        {
             return item;
-        }
         index = hash_code(key, this->size, i);
         i++;
     }
@@ -63,15 +74,15 @@ static struct Node *_create_node(const char *key, int data) /* insert data param
     struct Node *item = malloc(sizeof(struct Node));
     item->key = strdup(key);
     item->data = data;
+
     return item;
 }
-
 static void _print_table(Hash *this)
 {
     for (int i = 0; i < this->size; i++)
     {
         if (NULL != this->table[i])
-            printf("Data: %d     Key: %s    Index: %d\n", this->table[i]->data, this->table[i]->key, i);
+            print_node(this->table[i], i);
     }
 }
 
@@ -88,6 +99,7 @@ static void _insert(Hash *this, const char *key, int data) /* insert data params
         i++;
     }
     this->table[index] = item;
+    print_node(this->table[index], index);
     this->count++;
 }
 
@@ -102,5 +114,6 @@ Hash *CREATE_HASH(int size)
     this->create_node = _create_node;
     this->print_table = _print_table;
     this->count = 0;
+    printf("Allocating Hash Table %p\n", this);
     return this;
 }
