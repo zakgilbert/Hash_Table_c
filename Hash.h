@@ -1,25 +1,37 @@
 #ifndef HASH_H
 #define HASH_H
 
-struct Node
-{
-    char *key;
-    int data;
-};
+typedef struct _Node Node;
 
+/**
+ * A Hashtable
+ * To change the stored data types, edit the nodes fields in Node.h
+ * A hashtable instance can be declared as follows...
+ *      Hash * hash_table = CREATE_HASH(int size)
+ */
 typedef struct _Hash
 {
+    /**
+     * Deallocates all memory that of which was allocated at the hashtables creation.
+     */
     void (*destroy)(struct _Hash *this);
 
-    void (*insert)(struct _Hash *this, const char *key, int data); /* insert data params */
+    /**
+     * Performs a hash search for the given key
+     */
+    Node *(*search)(struct _Hash *this, const char *key);
 
-    struct Node *(*search)(struct _Hash *this, const char *key);
-
-    struct Node *(*create_node)(const char *key, int data); /* insert data params */
-
+    /**
+     * Prints Hashtable
+     */
     void (*print_table)(struct _Hash *this);
 
-    struct Node **table;
+    /**
+     * Inserts a new node into hashtable.
+     */
+    void (*insert)(struct _Hash *this, Node *node);
+
+    Node **table;
     int size;
     int count;
 
