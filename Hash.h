@@ -26,6 +26,7 @@ typedef struct _Hash
      */
     void (*print_table)(struct _Hash *this);
 
+    struct _Hash *(*grow)(struct _Hash *this);
     /**
      * Inserts a new node into hashtable.
      */

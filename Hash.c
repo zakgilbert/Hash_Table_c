@@ -22,6 +22,13 @@ static void print_node(Node *node, int i)
     node->print(node, i);
 }
 
+static int check_size(int size, int count)
+{
+    if (count >= size)
+        return 1;
+    return 0;
+}
+
 /**
  * Creates hash code from a char *, prime number, and the size of the hash table.
  */
@@ -101,6 +108,26 @@ static void _print_table(Hash *this)
             print_node(this->table[i], i);
     }
 }
+static Hash *_grow(Hash *this)
+{
+    Node **temp = this->table;
+    Node *dummy = NULL;
+    Node *temp_n = NULL;
+    int old_size = this->size;
+    this->size = old_size * 2;
+    this->table = realloc(this->table, (sizeof(Node *)) * (this->size));
+    this->count = 0;
+    for (int i = 0; i < old_size; i++)
+    {
+        temp_n = temp[i];
+        if (NULL != temp_n)
+        {
+            this->insert(this, CREATE_NODE(temp_n->key, temp_n->data));
+            this->table[i] = dummy;
+            temp_n->destroy(temp_n);
+        }
+    }
+}
 
 /**
  * Inserts a new node into hashtable.
@@ -110,6 +137,8 @@ static void _insert(Hash *this, Node *item)
     int index = hash_code(item->key, this->size, 0);
     Node *cur_item = this->table[index];
     int i = 1;
+    if (check_size(this->size, this->count) == 1)
+        this->grow(this);
     while (NULL != cur_item)
     {
         index = hash_code(item->key, this->size, i);
@@ -133,6 +162,7 @@ static void _delete(Hash *this, char *key)
     {
         this->table[item->index] = dummy;
         item->destroy(item);
+        this->count--;
     }
     else
         printf("The node with a key value %s was not found\n", key);
@@ -147,6 +177,7 @@ Hash *CREATE_HASH(int size)
     this->destroy = _destroy;
     this->search = _search;
     this->print_table = _print_table;
+    this->grow = _grow;
     this->insert = _insert;
     this->delete = _delete;
     this->count = 0;
