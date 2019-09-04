@@ -102,21 +102,34 @@ static Node *_search(Hash *this, char *key)
  */
 static void _print_table(Hash *this)
 {
+    printf("\n      Printing Table\n\n");
     for (int i = 0; i < this->size; i++)
     {
         if (NULL != this->table[i])
+        {
             print_node(this->table[i], i);
+            printf("%*s\n", 10, "Printing");
+        }
     }
 }
-static Hash *_grow(Hash *this)
+
+/**
+ * Doubles the size of the hashtable
+ */
+static void _grow(Hash *this)
 {
-    Node **temp = this->table;
-    Node *dummy = NULL;
-    Node *temp_n = NULL;
-    int old_size = this->size;
+    Node **temp;
+    Node *dummy, *temp_n;
+    int old_size;
+
+    temp = this->table;
+    dummy = NULL;
+    temp_n = NULL;
+    old_size = this->size;
     this->size = old_size * 2;
     this->table = realloc(this->table, (sizeof(Node *)) * (this->size));
     this->count = 0;
+    printf("\n       Resizing Hash Table\n\n");
     for (int i = 0; i < old_size; i++)
     {
         temp_n = temp[i];
@@ -148,6 +161,7 @@ static void _insert(Hash *this, Node *item)
     this->table[index] = item;
     this->table[index]->index = index;
     print_node(this->table[index], index);
+    printf("%*s\n", 10, "Added");
     this->count++;
 }
 

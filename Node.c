@@ -15,7 +15,8 @@ static void _destroy(Node *this)
 {
     if (NULL != this)
     {
-        printf("Freeing    %p\n", this);
+        this->print(this, this->index);
+        printf("%*s\n", 10, "Delete");
         free(this);
     }
 }
@@ -25,7 +26,7 @@ static void _destroy(Node *this)
  */
 static void _print(Node *node, int i)
 {
-    printf("Data: %d     Key: %s    Index: %d     %p\n", node->data, node->key, i, node);
+    printf("%p     Data: %*d     Key: %*s    Index: %*d", node, 2, node->data, 10, node->key, 2, i);
 }
 
 Node *CREATE_NODE(char *key, int data)
