@@ -129,7 +129,7 @@ static void _grow(Hash *this)
     this->size = old_size * 2;
     this->table = realloc(this->table, (sizeof(Node *)) * (this->size));
     this->count = 0;
-    printf("\n       Resizing Hash Table\n\n");
+    printf("\n       Resizing Hash Table               %p\n\n", this->table);
     for (int i = 0; i < old_size; i++)
     {
         temp_n = temp[i];
@@ -140,6 +140,7 @@ static void _grow(Hash *this)
             temp_n->destroy(temp_n);
         }
     }
+    free(temp);
 }
 
 /**
