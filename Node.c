@@ -15,9 +15,7 @@ static void _destroy(Node *this)
 {
     if (NULL != this)
     {
-        if (NULL != this->key)
-            free(this->key);
-
+        printf("Freeing    %p\n", this);
         free(this);
     }
 }
@@ -30,13 +28,12 @@ static void _print(Node *node, int i)
     printf("Data: %d     Key: %s    Index: %d     %p\n", node->data, node->key, i, node);
 }
 
-Node *CREATE_NODE(const char *key, int data)
+Node *CREATE_NODE(char *key, int data)
 {
     Node *this = malloc(sizeof(*this));
     this->destroy = _destroy;
     this->print = _print;
-    this->key = malloc(sizeof(strlen(key)));
-    this->key = strcpy(this->key, key);
+    this->key = key;
     this->data = data;
 
     return this;

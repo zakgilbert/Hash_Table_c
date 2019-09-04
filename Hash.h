@@ -19,7 +19,7 @@ typedef struct _Hash
     /**
      * Performs a hash search for the given key
      */
-    Node *(*search)(struct _Hash *this, const char *key);
+    Node *(*search)(struct _Hash *this, char *key);
 
     /**
      * Prints Hashtable
@@ -29,7 +29,12 @@ typedef struct _Hash
     /**
      * Inserts a new node into hashtable.
      */
-    void (*insert)(struct _Hash *this, Node *node);
+    void (*insert)(struct _Hash *this, Node *item);
+
+    /**
+     * Deletes node of key
+     */
+    void (*delete)(struct _Hash *this, char *key);
 
     Node **table;
     int size;

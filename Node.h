@@ -19,6 +19,6 @@ typedef struct _Node
     char *key;
     int data;
 } Node;
-Node *CREATE_NODE(const char *key, int data);
+Node *CREATE_NODE(char *key, int data);
 
 #endif /* NODE_H */

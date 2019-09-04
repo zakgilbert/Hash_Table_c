@@ -15,7 +15,7 @@
 
 /**
  * static Wrapper function for void (*_Node::print)(struct _Node *this, int i)
- * - Prints all fields of node along with its address in memory and the index of which it has been stored in the hashtable
+ * Prints all fields of node along with its address in memory and the index of which it has been stored in the hashtable
  */
 static void print_node(Node *node, int i)
 {
@@ -25,7 +25,7 @@ static void print_node(Node *node, int i)
 /**
  * Creates hash code from a char *, prime number, and the size of the hash table.
  */
-static int hash(const char *str, int prime, int size)
+static int hash(char *str, int prime, int size)
 {
     long hash = 0;
     int i;
@@ -39,9 +39,9 @@ static int hash(const char *str, int prime, int size)
 }
 
 /**
- * Creates hash code by passing two different prime numbers into <int hash(const char * , int, int)
+ * Creates hash code by passing two different prime numbers into <int hash(char * , int, int)
  */
-static int hash_code(const char *str, const int num, const int attempt)
+static int hash_code(char *str, const int num, const int attempt)
 {
     int hash_a = hash(str, PRIME_1, num);
     int hash_b = hash(str, PRIME_2, num);
@@ -53,26 +53,23 @@ static int hash_code(const char *str, const int num, const int attempt)
  */
 static void _destroy(Hash *this)
 {
+    Node *temp = NULL;
     if (NULL != this)
     {
         printf("\n  Deallocating Hash Table            %p\n\n", this);
         for (int i = 0; i < this->size; i++)
         {
-            if (NULL != this->table[i])
-            {
-                print_node(this->table[i], i);
-                this->table[i]->destroy(this->table[i]);
-            }
+            temp = this->table[i];
+            if (NULL != temp)
+                temp->destroy(temp);
         }
-        printf("\n");
-        free(this);
     }
 }
 
 /**
  * Performs a hash search for the given key
  */
-static Node *_search(Hash *this, const char *key)
+static Node *_search(Hash *this, char *key)
 {
     int index = hash_code(key, this->size, 0);
     Node *item = this->table[index];
@@ -102,7 +99,7 @@ static void _print_table(Hash *this)
 /**
  * Inserts a new node into hashtable.
  */
-static void _insert(Hash *this, Node *item) /* insert data params */
+static void _insert(Hash *this, Node *item)
 {
     int index = hash_code(item->key, this->size, 0);
     Node *cur_item = this->table[index];
@@ -118,15 +115,26 @@ static void _insert(Hash *this, Node *item) /* insert data params */
     this->count++;
 }
 
+/**
+ * Deletes node of key
+ */
+static void _delete(Hash *this, char *key)
+{
+    Node *item = this->search(this, key);
+    item->destroy(item);
+}
+
 Hash *CREATE_HASH(int size)
 {
     Hash *this = malloc(sizeof(*this));
     this->size = size;
-    this->table = calloc(this->size, sizeof(struct Node *));
-    this->insert = _insert;
+    this->table = malloc(sizeof(Node) * this->size);
+
     this->destroy = _destroy;
     this->search = _search;
     this->print_table = _print_table;
+    this->insert = _insert;
+    this->delete = _delete;
     this->count = 0;
     printf("\n  Allocating Hash Table              %p\n\n", this);
     return this;
