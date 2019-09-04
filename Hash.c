@@ -54,15 +54,21 @@ static int hash_code(char *str, const int num, const int attempt)
 static void _destroy(Hash *this)
 {
     Node *temp = NULL;
+    Node *dummy = NULL;
     if (NULL != this)
     {
         printf("\n  Deallocating Hash Table            %p\n\n", this);
-        for (int i = 0; i < this->size; i++)
+        for (size_t i = 0; i < this->size; i++)
         {
             temp = this->table[i];
             if (NULL != temp)
+            {
+                this->table[i] = dummy;
                 temp->destroy(temp);
+            }
         }
+        free(this->table);
+        free(this);
     }
 }
 
@@ -111,6 +117,7 @@ static void _insert(Hash *this, Node *item)
         i++;
     }
     this->table[index] = item;
+    this->table[index]->index = index;
     print_node(this->table[index], index);
     this->count++;
 }
@@ -121,14 +128,21 @@ static void _insert(Hash *this, Node *item)
 static void _delete(Hash *this, char *key)
 {
     Node *item = this->search(this, key);
-    item->destroy(item);
+    Node *dummy = NULL;
+    if (item)
+    {
+        this->table[item->index] = dummy;
+        item->destroy(item);
+    }
+    else
+        printf("The node with a key value %s was not found\n", key);
 }
 
 Hash *CREATE_HASH(int size)
 {
     Hash *this = malloc(sizeof(*this));
     this->size = size;
-    this->table = malloc(sizeof(Node) * this->size);
+    this->table = malloc(sizeof(Node *) * this->size);
 
     this->destroy = _destroy;
     this->search = _search;
