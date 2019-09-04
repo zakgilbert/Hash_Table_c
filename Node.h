@@ -18,6 +18,7 @@ typedef struct _Node
     void (*print)(struct _Node *this, int i);
     char *key;
     int data;
+    int index;
 } Node;
 Node *CREATE_NODE(char *key, int data);
 
